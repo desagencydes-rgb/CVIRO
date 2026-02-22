@@ -20,9 +20,9 @@
         <properties>
             <!-- Hibernate Dialect -->
             <!-- H2 (default/dev): -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/> -->
             <!-- PostgreSQL (Supabase — swap when ready): -->
-            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 
             <!-- DDL: auto-create/update schema on startup -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>

@@ -21,10 +21,10 @@
         maxIdle="10"
         maxWaitMillis="10000"
 
-        driverClassName="org.h2.Driver"
-        url="jdbc:h2:file:~/cvgendb_data;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL"
-        username="sa"
-        password=""
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://db.ieulwgaexrsnpncjkjas.supabase.co:5432/postgres?sslmode=require"
+        username="postgres"
+        password="Ray.hunt.elh.cor.astra34@"
 
         validationQuery="SELECT 1"
         testOnBorrow="true"
