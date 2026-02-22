@@ -19,7 +19,8 @@
         <div class="page-header">
             <div>
                 <h1 class="page-title">My Resumes</h1>
-                <p class="page-subtitle" th:text="'Welcome back, ' + ${user?.username} + '!'">Welcome back!</p>
+                <p class="page-subtitle"
+                    th:text="'Welcome back, ' + (${user} != null ? ${user.username} : 'User') + '!'">Welcome back!</p>
             </div>
             <a th:href="@{/editor/new}" class="btn btn-primary">+ New Resume</a>
         </div>
@@ -28,7 +29,7 @@
         <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
         <!-- CV Grid -->
-        <div class="cv-grid" th:if="${!cvs.isEmpty()}">
+        <div class="cv-grid" th:if="${cvs != null and !cvs.isEmpty()}">
             <div class="cv-card" th:each="cv : ${cvs}">
                 <div class="cv-card-body">
                     <div class="cv-card-top">
@@ -68,7 +69,7 @@
         </div>
 
         <!-- Empty state -->
-        <div class="empty-state" th:if="${cvs.isEmpty()}">
+        <div class="empty-state" th:if="${cvs == null or cvs.isEmpty()}">
             <div class="empty-icon">📄</div>
             <h2>No resumes yet</h2>
             <p>Create your first professional resume in minutes.</p>

@@ -50,10 +50,10 @@ public class AuthServlet extends BaseServlet {
 
         String path = req.getServletPath();
 
-        if ("/register".equals(path)) {
-            handleRegistration(req, resp);
-        } else {
-            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        switch (path) {
+            case "/login" -> handleLogin(req, resp);
+            case "/register" -> handleRegistration(req, resp);
+            default -> resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
     }
 
@@ -71,6 +71,46 @@ public class AuthServlet extends BaseServlet {
             req.setAttribute("loginError", "Invalid username or password. Please try again.");
         }
         render("login", req, resp);
+    }
+
+    /**
+     * Handles POST /login — validates credentials directly via UserService
+     * and tracks login state in HttpSession.
+     */
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        String username = req.getParameter("j_username");
+        String password = req.getParameter("j_password");
+
+        if (username == null || username.isBlank() || password == null || password.isBlank()) {
+            req.setAttribute("loginError", "Username and password are required.");
+            render("login", req, resp);
+            return;
+        }
+
+        if (userService.verifyPassword(username.trim(), password)) {
+            // ── Valid credentials ────────────────────────────────
+            // Invalidate any old session to prevent session fixation
+            if (req.getSession(false) != null) {
+                req.getSession().invalidate();
+            }
+            // Create a fresh session and mark the user as logged in
+            req.getSession(true).setAttribute("loggedInUser", username.trim());
+
+            // Redirect to dashboard (or previously saved URL)
+            String savedUrl = (String) req.getSession().getAttribute("savedRequestUrl");
+            if (savedUrl != null && !savedUrl.isEmpty()) {
+                req.getSession().removeAttribute("savedRequestUrl");
+                resp.sendRedirect(savedUrl);
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+            }
+        } else {
+            // ── Invalid credentials ──────────────────────────────
+            req.setAttribute("loginError", "Invalid username or password. Please try again.");
+            render("login", req, resp);
+        }
     }
 
     private void renderRegister(HttpServletRequest req, HttpServletResponse resp)

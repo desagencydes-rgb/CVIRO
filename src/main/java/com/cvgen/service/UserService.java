@@ -49,12 +49,32 @@ public class UserService {
     }
 
     /**
+     * Verifies a plain-text password against the stored hash for a username.
+     *
+     * @return true if credentials are valid, false otherwise.
+     */
+    public boolean verifyPassword(String username, String plainPassword) {
+        try {
+            Optional<User> userOpt = findByUsername(username);
+            if (userOpt.isEmpty()) {
+                return false;
+            }
+            String storedHash = userOpt.get().getPassword();
+            return getPasswordHash().verify(plainPassword.toCharArray(), storedHash);
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Password verification failed for: " + username, e);
+            return false;
+        }
+    }
+
+    /**
      * Registers a new user. Hashes the password before persisting.
      *
      * @return the persisted User
      * @throws IllegalArgumentException if username or email already exists
      */
     public User register(String username, String email, String plainPassword) {
+
         if (findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username already taken: " + username);
         }

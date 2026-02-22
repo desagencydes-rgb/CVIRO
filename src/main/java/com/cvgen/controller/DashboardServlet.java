@@ -84,9 +84,10 @@ public class DashboardServlet extends BaseServlet {
             return null;
 
         // Cache in session to avoid repeated DB lookups
-        User cached = (User) req.getSession(false) != null
-                ? (User) req.getSession().getAttribute("currentUser")
-                : null;
+        User cached = null;
+        if (req.getSession(false) != null) {
+            cached = (User) req.getSession().getAttribute("currentUser");
+        }
         if (cached != null && cached.getUsername().equals(username))
             return cached;
 

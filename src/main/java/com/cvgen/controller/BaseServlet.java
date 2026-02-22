@@ -57,14 +57,25 @@ public abstract class BaseServlet extends HttpServlet {
         // Context path and URI helpers for links & active states
         ctx.setVariable("contextPath", req.getContextPath());
         ctx.setVariable("currentUri", req.getRequestURI());
+        // Session-based auth: expose loggedInUser to templates (replaces principal)
+        String loggedInUser = null;
+        if (req.getSession(false) != null) {
+            loggedInUser = (String) req.getSession().getAttribute("loggedInUser");
+        }
+        ctx.setVariable("loggedInUser", loggedInUser);
+        // Legacy principal (for container-managed endpoints, may be null)
         ctx.setVariable("principal", req.getUserPrincipal());
 
         engine.process(templateName, ctx, resp.getWriter());
     }
 
-    /** Returns the authenticated username, or null if not logged in. */
+    /**
+     * Returns the authenticated username from session, or null if not logged in.
+     */
     protected String getAuthenticatedUser(HttpServletRequest req) {
-        return req.getUserPrincipal() != null ? req.getUserPrincipal().getName() : null;
+        if (req.getSession(false) == null)
+            return null;
+        return (String) req.getSession().getAttribute("loggedInUser");
     }
 
     /** Redirects to the login page. */

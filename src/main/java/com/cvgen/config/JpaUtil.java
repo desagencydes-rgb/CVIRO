@@ -2,35 +2,40 @@ package com.cvgen.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 /**
- * Thread-safe singleton utility for managing the JPA EntityManagerFactory.
+ * Thread-safe singleton for the JPA EntityManagerFactory.
  *
- * Usage in servlets/services:
- * EntityManager em = JpaUtil.getEntityManager();
- * try {
- * // ... operations ...
- * } finally {
- * em.close();
- * }
+ * Uses synchronized double-checked locking to guarantee only ONE factory
+ * is ever created — preventing H2 file-lock conflicts on hot-redeploy.
  */
 public final class JpaUtil {
 
     private static final Logger LOG = Logger.getLogger(JpaUtil.class.getName());
     private static final String PERSISTENCE_UNIT = "cvgen-pu";
-    private static final AtomicReference<EntityManagerFactory> EMF = new AtomicReference<>();
+
+    private static volatile EntityManagerFactory emf;
+    private static final Object LOCK = new Object();
 
     private JpaUtil() {
     }
 
     /**
-     * Returns the shared EntityManagerFactory, creating it on first call.
+     * Returns the shared EntityManagerFactory, creating it on first call (lazy,
+     * thread-safe).
      */
     public static EntityManagerFactory getEntityManagerFactory() {
-        EMF.compareAndSet(null, Persistence.createEntityManagerFactory(PERSISTENCE_UNIT));
-        return EMF.get();
+        if (emf == null || !emf.isOpen()) {
+            synchronized (LOCK) {
+                if (emf == null || !emf.isOpen()) {
+                    LOG.info("[CVPro] Creating EntityManagerFactory...");
+                    emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT);
+                    LOG.info("[CVPro] EntityManagerFactory created successfully.");
+                }
+            }
+        }
+        return emf;
     }
 
     /**
@@ -44,10 +49,12 @@ public final class JpaUtil {
      * Shuts down the EntityManagerFactory. Called on application context destroy.
      */
     public static void shutdown() {
-        EntityManagerFactory emf = EMF.getAndSet(null);
-        if (emf != null && emf.isOpen()) {
-            emf.close();
-            LOG.info("[CVPro] EntityManagerFactory closed.");
+        synchronized (LOCK) {
+            if (emf != null && emf.isOpen()) {
+                emf.close();
+                emf = null;
+                LOG.info("[CVPro] EntityManagerFactory closed.");
+            }
         }
     }
 }

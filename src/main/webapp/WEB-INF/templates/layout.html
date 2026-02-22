@@ -52,7 +52,7 @@
                 <li><a th:href="@{/home}" class="nav-link"
                         th:classappend="${#strings.startsWith(currentUri, contextPath + '/home')} ? ' active'">Home</a>
                 </li>
-                <th:block th:if="${principal != null}">
+                <th:block th:if="${loggedInUser != null}">
                     <li><a th:href="@{/dashboard}" class="nav-link"
                             th:classappend="${#strings.startsWith(currentUri, contextPath + '/dashboard')} ? ' active'">My
                             Resumes</a></li>
@@ -64,7 +64,7 @@
                         </form>
                     </li>
                 </th:block>
-                <th:block th:unless="${principal != null}">
+                <th:block th:unless="${loggedInUser != null}">
                     <li><a th:href="@{/login}" class="nav-link">Login</a></li>
                     <li><a th:href="@{/register}" class="nav-link btn-nav">Get Started</a></li>
                 </th:block>

@@ -50,7 +50,7 @@
                 Jakarta Security uses /j_security_check as the form action.
                 Field names MUST be j_username and j_password.
             -->
-                <form action="j_security_check" method="post" class="auth-form" id="loginForm" novalidate>
+                <form th:action="@{/login}" method="post" class="auth-form" id="loginForm" novalidate>
                     <div class="form-group">
                         <label for="j_username">Username</label>
                         <input type="text" id="j_username" name="j_username" class="form-input"
