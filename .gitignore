@@ -1,0 +1,28 @@
+target/
+*.class
+*.war
+*.ear
+*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# NetBeans
+nbproject/
+build/
+nbbuild/
+nbdist/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Sensitive Info (though we use H2 mem by default)
+*.db

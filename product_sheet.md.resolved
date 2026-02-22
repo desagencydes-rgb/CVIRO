@@ -1,0 +1,66 @@
+# CVPro: Professional CV Generator & SEO Engine
+**Product Specification Sheet**
+
+## 1. Product Vision
+A high-performance, SEO-optimized career platform that allows users to create, manage, and download professional resumes. Designed for organic traffic growth (Google SEO) and monetization (AdSense) using a robust enterprise stack.
+
+---
+
+## 2. Core Technology Stack
+- **Platform**: Jakarta EE 10 (Servlet 6.0, JPA 3.1, CDI 4.0)
+- **Runtime**: Apache Tomcat 11.0.x (JVM 21+)
+- **Templating**: Thymeleaf 3.1.x (Standard HTML5 SSR)
+- **Security**: Jakarta Security 3.0 (Soteria implementation)
+- **Database**: PostgreSQL (Managed via Supabase)
+- **PDF Engine**: OpenPDF (LibrePDF)
+- **Styling**: Vanilla CSS + Tailwind (Utility-first)
+
+---
+
+## 3. Architecture & Critical Configurations
+
+### JNDI Database Connection
+- **Name**: `jdbc/cvgen`
+- **Lookup Path**: `java:comp/env/jdbc/cvgen`
+- **Driver**: `org.postgresql.Driver`
+- **Infrastructure**: Configured in [META-INF/context.xml](file:///c:/Users/HP/Downloads/tppp/cv-generator/src/main/webapp/META-INF/context.xml) and referenced in [WEB-INF/web.xml](file:///c:/Users/HP/Downloads/tppp/cv-generator/src/main/webapp/WEB-INF/web.xml).
+
+### Security Architecture
+- **Identity Store**: Database-backed (`users` table).
+- **PASSWORD HASH**: `Pbkdf2PasswordHash.class`.
+- **CRITICAL**: Requires a JAX-RS implementation (e.g., **Jersey 3.1.5**) even if no REST endpoints exist, as Soteria internally uses `UriBuilder`.
+
+### Project Structure
+- `src/main/webapp/WEB-INF/templates/`: Housing all Thymeleaf fragments.
+- [layout.html](file:///c:/Users/HP/Downloads/tppp/cv-generator/src/main/webapp/WEB-INF/templates/layout.html): Base template using `th:fragment="layout"`.
+- [SEOFilter](file:///c:/Users/HP/Downloads/tppp/cv-generator/src/main/java/com/cvgen/config/SEOFilter.java#11-51): intercepts all requests to inject dynamic SEO meta tags.
+
+---
+
+## 4. Minimum Viable Data Schema (JPA Entities)
+
+### User
+- `id` (PK), `username` (Unique), `email` (Unique), `password` (Hashed).
+- `cvs` (OneToMany -> CV).
+
+### CV
+- `id` (PK), `title`, `fullName`, `summary`, `userId` (FK).
+- `experiences` (OneToMany -> Experience).
+- `skills` (OneToMany -> Skill).
+
+---
+
+## 5. Main Feature Set
+1. **User Authentication**: Secure registration and login flow using Jakarta Security.
+2. **CV Dashboard**: List, view, and delete existing resumes.
+3. **Multi-Step Editor**: Form-based resume builder with real-time state persistence.
+4. **PDF Generation**: One-click download of resumes in professional PDF format.
+5. **SEO Engine**: Dynamic meta-descriptions and titles for every sub-page.
+6. **AdSense Ready**: Structural slots for banner integration.
+
+---
+
+## 6. Implementation "Gotchas" (For the Next Dev)
+- **The "White Page" Fix**: Ensure `JakartaServletWebApplication` is used in Servlets to build the Thymeleaf `WebContext`.
+- **The Dependency Conflict**: Use `weld-servlet-shaded` to avoid conflicting CDI artifacts on Tomcat.
+- **Context Path**: The application is designed to run at `/cv-generator`. Links should use `req.getContextPath()` or `@{} ` in Thymeleaf.

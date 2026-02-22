@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${seoTitle} ?: 'CV Editor | CVPro'">CV Editor | CVPro</title>
+    <meta name="description" th:content="${seoDescription}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <main class="editor-layout">
+
+        <!-- Sidebar with step indicator -->
+        <aside class="editor-sidebar">
+            <a th:href="@{/home}" class="editor-logo">📄 CVPro</a>
+            <nav class="step-nav">
+                <div class="step-item" th:classappend="${step == 1} ? ' active' : (${step > 1} ? ' done' : '')">
+                    <div class="step-circle">
+                        <span th:if="${step > 1}">✓</span>
+                        <span th:unless="${step > 1}">1</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="step-num">Step 1</span>
+                        <span class="step-name">Basic Info</span>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-item" th:classappend="${step == 2} ? ' active' : (${step > 2} ? ' done' : '')">
+                    <div class="step-circle">
+                        <span th:if="${step > 2}">✓</span>
+                        <span th:unless="${step > 2}">2</span>
+                    </div>
+                    <div class="step-label">
+                        <span class="step-num">Step 2</span>
+                        <span class="step-name">Experience</span>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-item" th:classappend="${step == 3} ? ' active' : ''">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">
+                        <span class="step-num">Step 3</span>
+                        <span class="step-name">Skills</span>
+                    </div>
+                </div>
+            </nav>
+            <a th:href="@{/dashboard}" class="editor-back-link">← Back to Dashboard</a>
+        </aside>
+
+        <!-- Main editor area -->
+        <section class="editor-main">
+
+            <div th:if="${editorError}" class="alert alert-error" th:text="${editorError}"></div>
+
+            <!-- ───── STEP 1: Basic Info ───── -->
+            <div th:if="${step == 1}" class="editor-step">
+                <div class="editor-step-header">
+                    <h1>Basic Information</h1>
+                    <p>Start with your personal details and professional summary.</p>
+                </div>
+
+                <form th:action="${cv.id != null} ? @{/editor/{id}/step/1(id=${cv.id})} : @{/editor/new}" method="post"
+                    class="editor-form">
+
+                    <div class="form-two-col">
+                        <div class="form-group">
+                            <label for="title">Resume Title <span class="required">*</span></label>
+                            <input type="text" id="title" name="title" class="form-input"
+                                placeholder="e.g. Senior Java Developer CV" th:value="${cv.title}" required>
+                            <span class="form-hint">A name to identify this resume in your dashboard</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" class="form-input" placeholder="John Doe"
+                                th:value="${cv.fullName}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jobTitle">Job Title / Role</label>
+                            <input type="text" id="jobTitle" name="jobTitle" class="form-input"
+                                placeholder="e.g. Software Engineer" th:value="${cv.jobTitle}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com"
+                                th:value="${cv.email}">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 000-0000"
+                                th:value="${cv.phone}">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" class="form-input"
+                                placeholder="City, Country" th:value="${cv.location}">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedinUrl">LinkedIn URL</label>
+                            <input type="url" id="linkedinUrl" name="linkedinUrl" class="form-input"
+                                placeholder="https://linkedin.com/in/yourname" th:value="${cv.linkedinUrl}">
+                        </div>
+                        <div class="form-group">
+                            <label for="websiteUrl">Website / Portfolio</label>
+                            <input type="url" id="websiteUrl" name="websiteUrl" class="form-input"
+                                placeholder="https://yourwebsite.com" th:value="${cv.websiteUrl}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="summary">Professional Summary</label>
+                        <textarea id="summary" name="summary" class="form-input form-textarea"
+                            placeholder="Write 2–4 sentences about your key qualifications and career goals..." rows="4"
+                            th:text="${cv.summary}"></textarea>
+                        <span class="form-hint">Tip: Keep it under 100 words for best readability</span>
+                    </div>
+
+                    <div class="editor-actions">
+                        <a th:href="@{/dashboard}" class="btn btn-ghost">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            Save &amp; Continue → Experience
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ───── STEP 2: Work Experience ───── -->
+            <div th:if="${step == 2}" class="editor-step">
+                <div class="editor-step-header">
+                    <h1>Work Experience</h1>
+                    <p>Add your work history. Click "Add" for each entry. Click "Next" when done.</p>
+                </div>
+
+                <!-- Existing experiences -->
+                <div class="experience-list" th:if="${!cv.experiences.isEmpty()}">
+                    <h3 class="list-subtitle">Added Experiences</h3>
+                    <div class="exp-item" th:each="exp : ${cv.experiences}">
+                        <div class="exp-item-left">
+                            <div class="exp-dot"></div>
+                        </div>
+                        <div class="exp-item-right">
+                            <strong th:text="${exp.jobTitle}"></strong> at
+                            <span th:text="${exp.company}"></span>
+                            <span class="exp-date" th:text="${exp.dateRange}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add experience form -->
+                <div class="add-form-card">
+                    <h3>+ Add Experience</h3>
+                    <form th:action="@{/editor/{id}/step/2(id=${cv.id})}" method="post" class="editor-form">
+                        <input type="hidden" name="_action" value="add">
+                        <div class="form-two-col">
+                            <div class="form-group">
+                                <label for="exp_jobTitle">Job Title <span class="required">*</span></label>
+                                <input type="text" id="exp_jobTitle" name="jobTitle" class="form-input"
+                                    placeholder="Software Engineer" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exp_company">Company <span class="required">*</span></label>
+                                <input type="text" id="exp_company" name="company" class="form-input"
+                                    placeholder="Company Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exp_location">Location</label>
+                                <input type="text" id="exp_location" name="location" class="form-input"
+                                    placeholder="City, Country">
+                            </div>
+                            <div class="form-group">
+                                <label for="exp_startDate">Start Date</label>
+                                <input type="month" id="exp_startDate" name="startDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="exp_endDate">End Date</label>
+                                <input type="month" id="exp_endDate" name="endDate" class="form-input"
+                                    id="endDateField">
+                            </div>
+                            <div class="form-group form-check-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="isCurrent" id="currentJob"
+                                        onchange="document.getElementById('endDateField').disabled = this.checked">
+                                    Currently working here
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exp_desc">Description / Achievements</label>
+                            <textarea id="exp_desc" name="description" class="form-input form-textarea" rows="3"
+                                placeholder="• Led a team of 5 engineers to deliver X feature&#10;• Reduced load time by 40%..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline">+ Add This Experience</button>
+                    </form>
+                </div>
+
+                <!-- Next step -->
+                <form th:action="@{/editor/{id}/step/2(id=${cv.id})}" method="post" class="editor-actions">
+                    <input type="hidden" name="_action" value="next">
+                    <a th:href="@{/editor/{id}/step/1(id=${cv.id})}" class="btn btn-ghost">← Back</a>
+                    <button type="submit" class="btn btn-primary">Continue → Skills</button>
+                </form>
+            </div>
+
+            <!-- ───── STEP 3: Skills ───── -->
+            <div th:if="${step == 3}" class="editor-step">
+                <div class="editor-step-header">
+                    <h1>Skills</h1>
+                    <p>Add your technical and soft skills. Click "Finish" when you're done.</p>
+                </div>
+
+                <!-- Existing skills -->
+                <div class="skills-display" th:if="${!cv.skills.isEmpty()}">
+                    <h3 class="list-subtitle">Added Skills</h3>
+                    <div class="skills-tags">
+                        <span class="skill-tag" th:each="skill : ${cv.skills}"
+                            th:text="${skill.name} + ' · ' + ${skill.level}"></span>
+                    </div>
+                </div>
+
+                <!-- Add skill form -->
+                <div class="add-form-card">
+                    <h3>+ Add Skill</h3>
+                    <form th:action="@{/editor/{id}/step/3(id=${cv.id})}" method="post" class="editor-form">
+                        <input type="hidden" name="_action" value="add">
+                        <div class="form-three-col">
+                            <div class="form-group">
+                                <label for="skillName">Skill Name <span class="required">*</span></label>
+                                <input type="text" id="skillName" name="skillName" class="form-input"
+                                    placeholder="e.g. Java, Python, Leadership" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="skillLevel">Proficiency Level</label>
+                                <select id="skillLevel" name="skillLevel" class="form-input">
+                                    <option value="BEGINNER">Beginner</option>
+                                    <option value="INTERMEDIATE" selected>Intermediate</option>
+                                    <option value="ADVANCED">Advanced</option>
+                                    <option value="EXPERT">Expert</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input type="text" id="category" name="category" class="form-input"
+                                    placeholder="e.g. Programming, Languages">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline">+ Add Skill</button>
+                    </form>
+                </div>
+
+                <!-- Finish -->
+                <form th:action="@{/editor/{id}/step/3(id=${cv.id})}" method="post" class="editor-actions">
+                    <input type="hidden" name="_action" value="finish">
+                    <a th:href="@{/editor/{id}/step/2(id=${cv.id})}" class="btn btn-ghost">← Back</a>
+                    <button type="submit" class="btn btn-primary">🎉 Preview My Resume</button>
+                </form>
+            </div>
+
+        </section>
+    </main>
+</body>
+
+</html>

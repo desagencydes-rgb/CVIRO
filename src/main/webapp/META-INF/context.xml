@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!--
+        JNDI DataSource: jdbc/cvgen
+        ════════════════════════════════════════════════════════════════
+        Currently configured for H2 in-memory (development / default).
+
+        TO SWITCH TO SUPABASE / POSTGRESQL:
+        1. Replace driverClassName → org.postgresql.Driver
+        2. Replace url           → jdbc:postgresql://<host>:<port>/<dbname>?sslmode=require
+        3. Replace username/password with your Supabase credentials
+        4. Make sure postgresql-*.jar is in WEB-INF/lib (handled by Maven)
+        ════════════════════════════════════════════════════════════════
+    -->
+    <Resource
+        name="jdbc/cvgen"
+        auth="Container"
+        type="javax.sql.DataSource"
+        maxTotal="20"
+        maxIdle="10"
+        maxWaitMillis="10000"
+
+        driverClassName="org.h2.Driver"
+        url="jdbc:h2:mem:cvgendb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL"
+        username="sa"
+        password=""
+
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+    />
+
+    <!-- PostgreSQL / Supabase (uncomment and replace values if needed):
+    <Resource
+        name="jdbc/cvgen"
+        auth="Container"
+        type="javax.sql.DataSource"
+        maxTotal="20"
+        maxIdle="10"
+        maxWaitMillis="10000"
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://YOUR_SUPABASE_HOST:5432/postgres?sslmode=require"
+        username="postgres"
+        password="YOUR_SUPABASE_PASSWORD"
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+    />
+    -->
+
+</Context>

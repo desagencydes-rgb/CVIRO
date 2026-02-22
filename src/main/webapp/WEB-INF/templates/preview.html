@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Preview: ' + ${cv.title} + ' | CVPro'">Preview | CVPro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="preview-body">
+
+    <div class="preview-toolbar">
+        <a th:href="@{/dashboard}" class="btn btn-ghost btn-sm">← Dashboard</a>
+        <div class="preview-title" th:text="${cv.title}">Resume Title</div>
+        <a th:href="@{/download/{id}(id=${cv.id})}" class="btn btn-primary btn-sm">
+            ⬇ Download PDF
+        </a>
+        <a th:href="@{/editor/{id}/step/1(id=${cv.id})}" class="btn btn-outline btn-sm">
+            ✏️ Edit
+        </a>
+    </div>
+
+    <!-- CV Preview Sheet (mimics the PDF layout) -->
+    <div class="preview-sheet">
+
+        <!-- Header block -->
+        <div class="preview-header">
+            <div class="preview-initials" th:text="${#strings.substring(cv.fullName,0,2).toUpperCase()}">JD</div>
+            <div class="preview-header-info">
+                <h1 class="preview-name" th:text="${cv.fullName}">Full Name</h1>
+                <p class="preview-job-title" th:if="${cv.jobTitle}" th:text="${cv.jobTitle}"></p>
+                <div class="preview-contact">
+                    <span th:if="${cv.email}" th:text="'✉ ' + ${cv.email}"></span>
+                    <span th:if="${cv.phone}" th:text="'📞 ' + ${cv.phone}"></span>
+                    <span th:if="${cv.location}" th:text="'📍 ' + ${cv.location}"></span>
+                    <span th:if="${cv.linkedinUrl}">
+                        <a th:href="${cv.linkedinUrl}" target="_blank">LinkedIn</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="preview-section" th:if="${cv.summary != null and !cv.summary.isBlank()}">
+            <h2 class="preview-section-title">Professional Summary</h2>
+            <p th:text="${cv.summary}"></p>
+        </div>
+
+        <!-- Experience -->
+        <div class="preview-section" th:if="${!cv.experiences.isEmpty()}">
+            <h2 class="preview-section-title">Work Experience</h2>
+            <div class="preview-exp" th:each="exp : ${cv.experiences}">
+                <div class="preview-exp-header">
+                    <div>
+                        <strong th:text="${exp.jobTitle}"></strong>
+                        <span class="preview-company" th:text="' @ ' + ${exp.company}"></span>
+                        <span th:if="${exp.location}" class="preview-location" th:text="'— ' + ${exp.location}"></span>
+                    </div>
+                    <span class="preview-date-range" th:text="${exp.dateRange}"></span>
+                </div>
+                <p class="preview-exp-desc" th:if="${exp.description}" th:text="${exp.description}"></p>
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="preview-section" th:if="${!cv.skills.isEmpty()}">
+            <h2 class="preview-section-title">Skills</h2>
+            <div class="preview-skills-grid">
+                <div class="preview-skill-item" th:each="skill : ${cv.skills}">
+                    <div class="preview-skill-header">
+                        <span class="preview-skill-name" th:text="${skill.name}"></span>
+                        <span class="preview-skill-level" th:text="${skill.level}"></span>
+                    </div>
+                    <div class="preview-skill-bar">
+                        <div class="preview-skill-fill" th:style="'width: ' + ${skill.levelPercent} + '%'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /preview-sheet -->
+
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${seoTitle} ?: 'Sign In | CVPro'">Sign In | CVPro</title>
+    <meta name="description" th:content="${seoDescription}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="auth-body">
+
+    <div class="auth-split">
+        <!-- Left brand panel -->
+        <div class="auth-brand-panel">
+            <a th:href="@{/home}" class="auth-logo">📄 CVPro</a>
+            <div class="auth-brand-content">
+                <h2>Welcome back.</h2>
+                <p>Your professional resume is waiting for you.</p>
+                <ul class="auth-benefits">
+                    <li>✅ Manage all your CVs in one place</li>
+                    <li>✅ Download as professional PDF</li>
+                    <li>✅ Update anytime, anywhere</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="auth-form-panel">
+            <div class="auth-card">
+                <h1 class="auth-title">Sign In</h1>
+                <p class="auth-subtitle">
+                    Don't have an account?
+                    <a th:href="@{/register}">Create one free →</a>
+                </p>
+
+                <!-- Success message after registration -->
+                <div th:if="${param.registered}" class="alert alert-success">
+                    🎉 Account created! Please sign in below.
+                </div>
+
+                <!-- Error message for failed login -->
+                <div th:if="${loginError}" class="alert alert-error" th:text="${loginError}"></div>
+
+                <!--
+                Jakarta Security uses /j_security_check as the form action.
+                Field names MUST be j_username and j_password.
+            -->
+                <form action="j_security_check" method="post" class="auth-form" id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="j_username">Username</label>
+                        <input type="text" id="j_username" name="j_username" class="form-input"
+                            placeholder="Enter your username" autocomplete="username" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="j_password">Password</label>
+                        <div class="input-password-wrapper">
+                            <input type="password" id="j_password" name="j_password" class="form-input"
+                                placeholder="Enter your password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-password"
+                                onclick="togglePassword('j_password', this)">👁</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">
+                        Sign In →
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId, btn) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+            btn.textContent = field.type === 'password' ? '👁' : '🙈';
+        }
+    </script>
+</body>
+
+</html>

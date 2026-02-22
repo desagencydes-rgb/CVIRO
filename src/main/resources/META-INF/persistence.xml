@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
+             version="3.1">
+
+    <persistence-unit name="cvgen-pu" transaction-type="RESOURCE_LOCAL">
+
+        <!-- JNDI DataSource (configured in context.xml) -->
+        <non-jta-data-source>java:comp/env/jdbc/cvgen</non-jta-data-source>
+
+        <!-- JPA Entities (all must be listed or use scanning) -->
+        <class>com.cvgen.model.User</class>
+        <class>com.cvgen.model.CV</class>
+        <class>com.cvgen.model.Experience</class>
+        <class>com.cvgen.model.Skill</class>
+
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <properties>
+            <!-- Hibernate Dialect -->
+            <!-- H2 (default/dev): -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- PostgreSQL (Supabase — swap when ready): -->
+            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/> -->
+
+            <!-- DDL: auto-create/update schema on startup -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- SQL Logging (disable in production) -->
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+
+            <!-- Connection pool settings -->
+            <property name="hibernate.connection.pool_size" value="10"/>
+
+            <!-- Encoding -->
+            <property name="hibernate.connection.charSet" value="UTF-8"/>
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

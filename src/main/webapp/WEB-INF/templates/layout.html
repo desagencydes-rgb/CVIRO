@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ═══════ SEO Meta Tags (injected by SEOFilter) ═══════ -->
+    <title th:text="${seoTitle} ?: 'CVPro — Professional CV Generator'">CVPro</title>
+    <meta name="description" th:content="${seoDescription} ?: 'Build your professional resume with CVPro.'">
+    <meta name="keywords" th:content="${seoKeywords}    ?: 'cv generator, resume builder'">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" th:content="${seoTitle}">
+    <meta property="og:description" th:content="${seoDescription}">
+    <meta property="og:type" content="website">
+    <!-- ═══════ Fonts & Styles ═══════ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+    <th:block th:replace="${extraHead} ?: ~{}"></th:block>
+</head>
+
+<body th:class="${bodyClass} ?: ''">
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  AdSense Slot — Top Banner                                 -->
+    <!--  Replace data-ad-client / data-ad-slot with your values   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--
+    <div class="adsense-top">
+        <ins class="adsbygoogle" style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    -->
+
+    <!-- ═══════ Navigation ═══════ -->
+    <nav class="navbar" id="mainNav">
+        <div class="nav-container">
+            <a th:href="@{/home}" class="nav-brand">
+                <span class="brand-icon">📄</span>
+                <span class="brand-text">CV<span class="brand-accent">Pro</span></span>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a th:href="@{/home}" class="nav-link"
+                        th:classappend="${#strings.startsWith(currentUri, contextPath + '/home')} ? ' active'">Home</a>
+                </li>
+                <th:block th:if="${principal != null}">
+                    <li><a th:href="@{/dashboard}" class="nav-link"
+                            th:classappend="${#strings.startsWith(currentUri, contextPath + '/dashboard')} ? ' active'">My
+                            Resumes</a></li>
+
+                    <li><a th:href="@{/editor/new}" class="nav-link btn-nav">+ New CV</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="get" style="display:inline">
+                            <button type="submit" class="nav-link nav-logout">Logout</button>
+                        </form>
+                    </li>
+                </th:block>
+                <th:block th:unless="${principal != null}">
+                    <li><a th:href="@{/login}" class="nav-link">Login</a></li>
+                    <li><a th:href="@{/register}" class="nav-link btn-nav">Get Started</a></li>
+                </th:block>
+            </ul>
+
+            <button class="nav-hamburger" onclick="toggleNav()" aria-label="Toggle menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- ═══════ Main Content ═══════ -->
+    <main class="main-content" id="mainContent">
+        <th:block th:replace="${content}"></th:block>
+    </main>
+
+    <!-- ═══════ Footer ═══════ -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="brand-icon">📄</span>
+                <strong>CVPro</strong> — Professional Resume Builder
+            </div>
+            <p class="footer-copy">&copy; 2025 CVPro. Built with Jakarta EE 10 &amp; Thymeleaf.</p>
+        </div>
+        <!--
+        AdSense Footer Banner (uncomment when approved):
+        <ins class="adsbygoogle" style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+    </footer>
+
+    <script>
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+        // Close nav when clicking outside
+        document.addEventListener('click', function (e) {
+            const nav = document.getElementById('navLinks');
+            const hamburger = document.querySelector('.nav-hamburger');
+            if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
+                nav.classList.remove('open');
+            }
+        });
+    </script>
+    <th:block th:replace="${extraScripts} ?: ~{}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!--/* Home / Landing Page */-->
+
+<head th:replace="~{layout :: head(title='CVPro — Build Your Professional Resume Online')}"></head>
+
+<body>
+    <div th:replace="~{layout :: body(content=~{::main-content})}">
+        <th:block th:fragment="main-content">
+
+            <!-- ═══════ Hero Section ═══════ -->
+            <section class="hero">
+                <div class="hero-bg-glow"></div>
+                <div class="hero-content">
+                    <span class="hero-badge">✨ Free · Professional · Fast</span>
+                    <h1 class="hero-title">
+                        Build Your <span class="gradient-text">Dream Resume</span><br>in Minutes
+                    </h1>
+                    <p class="hero-subtitle">
+                        CVPro turns your experience into a stunning PDF resume.<br>
+                        No word processor. No formatting headaches. Just results.
+                    </p>
+                    <div class="hero-cta">
+                        <a th:href="@{/register}" class="btn btn-primary btn-lg">
+                            🚀 Create My CV — It's Free
+                        </a>
+                        <a th:href="@{/login}" class="btn btn-ghost btn-lg">
+                            Sign In
+                        </a>
+                    </div>
+                    <p class="hero-social-proof">
+                        Trusted by <strong>10,000+</strong> job seekers worldwide
+                    </p>
+                </div>
+                <div class="hero-visual">
+                    <div class="cv-card-preview">
+                        <div class="cv-card-header">
+                            <div class="cv-card-avatar">JD</div>
+                            <div>
+                                <div class="cv-card-name">Jane Doe</div>
+                                <div class="cv-card-role">Senior Software Engineer</div>
+                            </div>
+                        </div>
+                        <div class="cv-card-section">
+                            <div class="cv-card-label">EXPERIENCE</div>
+                            <div class="cv-card-item">
+                                <span class="cv-card-dot"></span>Google · 2022–Present
+                            </div>
+                            <div class="cv-card-item">
+                                <span class="cv-card-dot"></span>Meta · 2020–2022
+                            </div>
+                        </div>
+                        <div class="cv-card-section">
+                            <div class="cv-card-label">SKILLS</div>
+                            <div class="cv-card-skills">
+                                <span class="skill-chip">Java</span>
+                                <span class="skill-chip">Python</span>
+                                <span class="skill-chip">React</span>
+                                <span class="skill-chip">Cloud</span>
+                            </div>
+                        </div>
+                        <div class="cv-card-download-btn">⬇ Download PDF</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════ Features Section ═══════ -->
+            <section class="features" id="features">
+                <div class="section-container">
+                    <div class="section-header">
+                        <span class="section-tag">Why CVPro?</span>
+                        <h2 class="section-title">Everything You Need to Land the Job</h2>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔐</div>
+                            <h3>Secure &amp; Private</h3>
+                            <p>Your data is encrypted and never shared. Login protected with industry-standard Pbkdf2
+                                password hashing.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">✏️</div>
+                            <h3>Step-by-Step Editor</h3>
+                            <p>Guided form wizard walks you through basics, experience, and skills. Save progress at
+                                every step.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📄</div>
+                            <h3>PDF Export</h3>
+                            <p>Download a professional, ATS-friendly PDF resume with one click. Perfect formatting every
+                                time.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Manage Multiple CVs</h3>
+                            <p>Create different resumes for different roles. Your dashboard keeps them all organized.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h3>SEO Optimized</h3>
+                            <p>Every page has dynamic meta tags — great for Google Discover and organic career traffic.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Blazing Fast</h3>
+                            <p>Built on Jakarta EE 10 + Tomcat 11. Server-side rendered HTML with zero JavaScript
+                                frameworks.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════ CTA Banner ═══════ -->
+            <section class="cta-banner">
+                <div class="cta-content">
+                    <h2>Ready to build your resume?</h2>
+                    <p>Join thousands of professionals who trust CVPro.</p>
+                    <a th:href="@{/register}" class="btn btn-primary btn-lg">Start for Free →</a>
+                </div>
+            </section>
+
+        </th:block>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${seoTitle} ?: 'My Resumes | CVPro'">My Resumes | CVPro</title>
+    <meta name="description" th:content="${seoDescription}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <nav class="navbar" th:replace="~{layout :: nav}"></nav>
+
+    <main class="page-container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">My Resumes</h1>
+                <p class="page-subtitle" th:text="'Welcome back, ' + ${user?.username} + '!'">Welcome back!</p>
+            </div>
+            <a th:href="@{/editor/new}" class="btn btn-primary">+ New Resume</a>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+        <!-- CV Grid -->
+        <div class="cv-grid" th:if="${!cvs.isEmpty()}">
+            <div class="cv-card" th:each="cv : ${cvs}">
+                <div class="cv-card-body">
+                    <div class="cv-card-top">
+                        <div class="cv-initials" th:text="${#strings.substring(cv.fullName, 0, 2).toUpperCase()}">JD
+                        </div>
+                        <div class="cv-card-info">
+                            <h3 class="cv-card-title" th:text="${cv.title}">Software Engineer CV</h3>
+                            <p class="cv-card-name" th:text="${cv.fullName}">John Doe</p>
+                            <p class="cv-card-meta"
+                                th:text="${cv.experiences.size()} + ' experience(s) · ' + ${cv.skills.size()} + ' skill(s)'">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="cv-card-date" th:text="'Updated ' + ${#temporals.format(cv.updatedAt, 'MMM dd, yyyy')}">
+                    </p>
+                </div>
+
+                <div class="cv-card-actions">
+                    <a th:href="@{/editor/{id}/step/1(id=${cv.id})}" class="btn btn-sm btn-outline" title="Edit">
+                        ✏️ Edit
+                    </a>
+                    <a th:href="@{/editor/{id}/preview(id=${cv.id})}" class="btn btn-sm btn-ghost" title="Preview">
+                        👁 Preview
+                    </a>
+                    <a th:href="@{/download/{id}(id=${cv.id})}" class="btn btn-sm btn-success" title="Download PDF">
+                        ⬇ PDF
+                    </a>
+                    <!-- Delete form -->
+                    <form th:action="@{/dashboard}" method="post" style="display:inline"
+                        onsubmit="return confirm('Delete this resume? This cannot be undone.')">
+                        <input type="hidden" name="_action" value="delete">
+                        <input type="hidden" name="cvId" th:value="${cv.id}">
+                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">🗑</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" th:if="${cvs.isEmpty()}">
+            <div class="empty-icon">📄</div>
+            <h2>No resumes yet</h2>
+            <p>Create your first professional resume in minutes.</p>
+            <a th:href="@{/editor/new}" class="btn btn-primary btn-lg">🚀 Create My First CV</a>
+        </div>
+    </main>
+
+    <footer class="footer" th:replace="~{layout :: footer}"></footer>
+</body>
+
+</html>
