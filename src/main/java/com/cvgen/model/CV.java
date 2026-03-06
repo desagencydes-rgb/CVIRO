@@ -13,10 +13,8 @@ import java.util.List;
 @Entity
 @Table(name = "cvs")
 @NamedQueries({
-    @NamedQuery(name = "CV.findByUser",
-                query = "SELECT c FROM CV c WHERE c.user = :user ORDER BY c.updatedAt DESC"),
-    @NamedQuery(name = "CV.findByIdAndUser",
-                query = "SELECT c FROM CV c WHERE c.id = :id AND c.user = :user")
+        @NamedQuery(name = "CV.findByUser", query = "SELECT c FROM CV c WHERE c.user = :user ORDER BY c.updatedAt DESC"),
+        @NamedQuery(name = "CV.findByIdAndUser", query = "SELECT c FROM CV c WHERE c.id = :id AND c.user = :user")
 })
 public class CV {
 
@@ -48,8 +46,7 @@ public class CV {
     @Column(name = "website_url", length = 255)
     private String websiteUrl;
 
-    @Lob
-    @Column(name = "summary")
+    @Column(name = "summary", columnDefinition = "TEXT")
     private String summary;
 
     // ─── Relationships ───────────────────────────────────────────────
@@ -86,7 +83,8 @@ public class CV {
 
     // ─── Constructors ────────────────────────────────────────────────
 
-    public CV() {}
+    public CV() {
+    }
 
     public CV(String title, String fullName, User user) {
         this.title = title;
@@ -118,45 +116,115 @@ public class CV {
 
     // ─── Getters & Setters ───────────────────────────────────────────
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getJobTitle() { return jobTitle; }
-    public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getJobTitle() {
+        return jobTitle;
+    }
 
-    public String getLinkedinUrl() { return linkedinUrl; }
-    public void setLinkedinUrl(String linkedinUrl) { this.linkedinUrl = linkedinUrl; }
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
 
-    public String getWebsiteUrl() { return websiteUrl; }
-    public void setWebsiteUrl(String websiteUrl) { this.websiteUrl = websiteUrl; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getSummary() { return summary; }
-    public void setSummary(String summary) { this.summary = summary; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public List<Experience> getExperiences() { return experiences; }
-    public void setExperiences(List<Experience> experiences) { this.experiences = experiences; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public List<Skill> getSkills() { return skills; }
-    public void setSkills(List<Skill> skills) { this.skills = skills; }
+    public String getLocation() {
+        return location;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLinkedinUrl() {
+        return linkedinUrl;
+    }
+
+    public void setLinkedinUrl(String linkedinUrl) {
+        this.linkedinUrl = linkedinUrl;
+    }
+
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Experience> getExperiences() {
+        return experiences;
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        this.experiences = experiences;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }

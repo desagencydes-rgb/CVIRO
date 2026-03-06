@@ -4,44 +4,45 @@
     <!--
         JNDI DataSource: jdbc/cvgen
         ════════════════════════════════════════════════════════════════
-        Currently configured for H2 in-memory (development / default).
+        H2 embedded database — local development (zero configuration).
+        Data is stored in a file so it persists across restarts.
 
         TO SWITCH TO SUPABASE / POSTGRESQL:
-        1. Replace driverClassName → org.postgresql.Driver
-        2. Replace url           → jdbc:postgresql://<host>:<port>/<dbname>?sslmode=require
-        3. Replace username/password with your Supabase credentials
-        4. Make sure postgresql-*.jar is in WEB-INF/lib (handled by Maven)
+        1. Comment out the H2 Resource block below
+        2. Uncomment the PostgreSQL Resource block at the bottom
+        3. Fill in your Supabase host, username, and password
         ════════════════════════════════════════════════════════════════
     -->
+
+    <!-- ── H2 Embedded (DEFAULT — works out of the box locally) ─────── -->
     <Resource
         name="jdbc/cvgen"
         auth="Container"
-        type="javax.sql.DataSource"
+        type="jakarta.sql.DataSource"
         maxTotal="20"
         maxIdle="10"
         maxWaitMillis="10000"
-
-        driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://db.ieulwgaexrsnpncjkjas.supabase.co:5432/postgres?sslmode=require"
-        username="postgres"
-        password="Ray.hunt.elh.cor.astra34@"
-
+        driverClassName="org.h2.Driver"
+        url="jdbc:h2:file:${user.home}/.cvpro/db/cvgen;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE"
+        username="sa"
+        password=""
         validationQuery="SELECT 1"
         testOnBorrow="true"
     />
 
-    <!-- PostgreSQL / Supabase (uncomment and replace values if needed):
+    <!-- ── PostgreSQL / Supabase (uncomment to use in production) ───── -->
+    <!--
     <Resource
         name="jdbc/cvgen"
         auth="Container"
-        type="javax.sql.DataSource"
+        type="jakarta.sql.DataSource"
         maxTotal="20"
         maxIdle="10"
         maxWaitMillis="10000"
         driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://YOUR_SUPABASE_HOST:5432/postgres?sslmode=require"
+        url="jdbc:postgresql://db.ieulwgaexrsnpncjkjas.supabase.co:5432/postgres?sslmode=require"
         username="postgres"
-        password="YOUR_SUPABASE_PASSWORD"
+        password="Ray.hunt.elh.cor.astra34@"
         validationQuery="SELECT 1"
         testOnBorrow="true"
     />

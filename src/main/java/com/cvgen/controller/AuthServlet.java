@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Authentication servlet — handles Login page display, Registration, and
@@ -24,6 +26,7 @@ import java.io.IOException;
 @WebServlet(name = "AuthServlet", urlPatterns = { "/login", "/register", "/logout" })
 public class AuthServlet extends BaseServlet {
 
+    private static final Logger LOG = Logger.getLogger(AuthServlet.class.getName());
     private final UserService userService = new UserService();
 
     // ─── GET ─────────────────────────────────────────────────────────

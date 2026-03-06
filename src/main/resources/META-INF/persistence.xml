@@ -4,35 +4,58 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
              version="3.1">
 
+    <!--
+        ═══════════════════════════════════════════════════════════════
+        CVPro Persistence Unit
+        ═══════════════════════════════════════════════════════════════
+        Uses DIRECT JDBC (no JNDI) so Hibernate manages the connection
+        pool itself — avoids Tomcat classloader issues with DBCP.
+
+        Active: H2 file database (local dev, zero-config).
+        To switch to PostgreSQL/Supabase: comment out the H2 block and
+        uncomment the PostgreSQL block at the bottom of this file.
+        ═══════════════════════════════════════════════════════════════
+    -->
     <persistence-unit name="cvgen-pu" transaction-type="RESOURCE_LOCAL">
 
-        <!-- JNDI DataSource (configured in context.xml) -->
-        <non-jta-data-source>java:comp/env/jdbc/cvgen</non-jta-data-source>
-
-        <!-- JPA Entities (all must be listed or use scanning) -->
+        <!-- JPA Entities -->
         <class>com.cvgen.model.User</class>
         <class>com.cvgen.model.CV</class>
         <class>com.cvgen.model.Experience</class>
         <class>com.cvgen.model.Skill</class>
-
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
-            <!-- Hibernate Dialect -->
-            <!-- H2 (default/dev): -->
-            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/> -->
-            <!-- PostgreSQL (Supabase — swap when ready): -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <!-- ══ H2 Embedded (DEFAULT — zero setup required) ═══════ -->
+            <property name="jakarta.persistence.jdbc.driver"   value="org.h2.Driver"/>
+            <property name="jakarta.persistence.jdbc.url"      value="jdbc:h2:file:${user.home}/.cvpro/cvgen;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE"/>
+            <property name="jakarta.persistence.jdbc.user"     value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
 
-            <!-- DDL: auto-create/update schema on startup -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
+            <!-- ══ PostgreSQL / Supabase (swap to use in production) ══
+            <property name="jakarta.persistence.jdbc.driver"   value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url"      value="jdbc:postgresql://db.ieulwgaexrsnpncjkjas.supabase.co:5432/postgres?sslmode=require"/>
+            <property name="jakarta.persistence.jdbc.user"     value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="Ray.hunt.elh.cor.astra34@"/>
+
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            ══════════════════════════════════════════════════════════ -->
+
+            <!-- DDL: auto-create/update tables on startup -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
 
-            <!-- SQL Logging (disable in production) -->
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
+            <!-- Connection pool (Hibernate built-in C3P0) -->
+            <property name="hibernate.c3p0.min_size"        value="2"/>
+            <property name="hibernate.c3p0.max_size"        value="10"/>
+            <property name="hibernate.c3p0.acquire_increment" value="1"/>
+            <property name="hibernate.c3p0.timeout"         value="300"/>
+            <property name="hibernate.c3p0.idle_test_period" value="3000"/>
 
-            <!-- Connection pool settings -->
-            <property name="hibernate.connection.pool_size" value="10"/>
+            <!-- SQL logging (set to true for debugging) -->
+            <property name="hibernate.show_sql"   value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
 
             <!-- Encoding -->
             <property name="hibernate.connection.charSet" value="UTF-8"/>
