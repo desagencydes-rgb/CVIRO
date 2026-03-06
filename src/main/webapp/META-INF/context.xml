@@ -22,8 +22,8 @@
         maxWaitMillis="10000"
 
         driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://aws-1-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require"
-        username="postgres.ieulwgaexrsnpncjkjas"
+        url="jdbc:postgresql://db.ieulwgaexrsnpncjkjas.supabase.co:5432/postgres?sslmode=require"
+        username="postgres"
         password="Ray.hunt.elh.cor.astra34@"
 
         validationQuery="SELECT 1"

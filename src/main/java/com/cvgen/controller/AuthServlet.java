@@ -167,7 +167,12 @@ public class AuthServlet extends BaseServlet {
             req.setAttribute("formEmail", email);
             render("register", req, resp);
         } catch (Exception e) {
-            req.setAttribute("registerError", "An unexpected error occurred. Please try again.");
+            String msg = e.getMessage();
+            if (e.getCause() != null) {
+                msg += " | Cause: " + e.getCause().getMessage();
+            }
+            req.setAttribute("registerError", "Unexpected Error: " + msg);
+            LOG.log(Level.SEVERE, "Registration failed", e);
             render("register", req, resp);
         }
     }

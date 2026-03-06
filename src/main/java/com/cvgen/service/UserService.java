@@ -29,15 +29,18 @@ public class UserService {
     private Pbkdf2PasswordHash getPasswordHash() {
         if (passwordHash == null) {
             try {
-                passwordHash = Pbkdf2PasswordHash.class.getConstructor().newInstance();
+                // Try to load the Soteria implementation directly
+                Class<?> clazz = Class.forName("org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl");
+                passwordHash = (Pbkdf2PasswordHash) clazz.getConstructor().newInstance();
             } catch (Exception e) {
-                // Fallback: load via CDI-provided implementation class
-                try {
-                    Class<?> clazz = Class.forName("org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl");
-                    passwordHash = (Pbkdf2PasswordHash) clazz.getConstructor().newInstance();
-                } catch (Exception ex) {
-                    throw new RuntimeException("Could not instantiate Pbkdf2PasswordHash", ex);
-                }
+                // Last ditch effort: try to let the container find it (even if we aren't fully
+                // in CDI)
+                LOG.log(Level.WARNING,
+                        "Direct Soteria instantiation failed, attempting to find any Pbkdf2PasswordHash implementation",
+                        e);
+                throw new RuntimeException(
+                        "Could not find or instantiate Pbkdf2PasswordHash implementation. Ensure Soteria is in the classpath.",
+                        e);
             }
             Map<String, String> params = new HashMap<>();
             params.put("Pbkdf2PasswordHash.Iterations", "2048");
