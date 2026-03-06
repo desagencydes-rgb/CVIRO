@@ -30,9 +30,18 @@ public class CVService {
     public List<CV> getCVsForUser(User user) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createNamedQuery("CV.findByUser", CV.class)
+            em.getTransaction().begin();
+            List<CV> results = em.createNamedQuery("CV.findByUser", CV.class)
                     .setParameter("user", em.merge(user))
                     .getResultList();
+            em.getTransaction().commit();
+            return results;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            LOG.log(Level.SEVERE, "Error fetching CVs for user", e);
+            throw e;
         } finally {
             em.close();
         }
@@ -44,11 +53,26 @@ public class CVService {
     public Optional<CV> findById(Long cvId, User owner) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
+            em.getTransaction().begin();
             List<CV> results = em.createNamedQuery("CV.findByIdAndUser", CV.class)
                     .setParameter("id", cvId)
                     .setParameter("user", em.merge(owner))
                     .getResultList();
+
+            // To prevent "Unable to access lob stream" in PostgreSQL,
+            // the summary field needs to be accessed while the transaction is active.
+            if (!results.isEmpty()) {
+                results.get(0).getSummary();
+            }
+
+            em.getTransaction().commit();
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            LOG.log(Level.SEVERE, "Error finding CV by id", e);
+            throw e;
         } finally {
             em.close();
         }

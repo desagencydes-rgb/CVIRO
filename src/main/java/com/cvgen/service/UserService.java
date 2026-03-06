@@ -108,12 +108,23 @@ public class UserService {
     public Optional<User> findByUsername(String username) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
+            em.getTransaction().begin();
             User user = em.createNamedQuery("User.findByUsername", User.class)
                     .setParameter("username", username)
                     .getSingleResult();
+            em.getTransaction().commit();
             return Optional.of(user);
         } catch (NoResultException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return Optional.empty();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            LOG.log(Level.SEVERE, "Error finding user by username: " + username, e);
+            throw e;
         } finally {
             em.close();
         }
@@ -125,12 +136,23 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
+            em.getTransaction().begin();
             User user = em.createNamedQuery("User.findByEmail", User.class)
                     .setParameter("email", email)
                     .getSingleResult();
+            em.getTransaction().commit();
             return Optional.of(user);
         } catch (NoResultException e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return Optional.empty();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            LOG.log(Level.SEVERE, "Error finding user by email: " + email, e);
+            throw e;
         } finally {
             em.close();
         }
